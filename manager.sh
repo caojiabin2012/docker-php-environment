@@ -20,11 +20,12 @@ function start_mysql(){
 }
 
 function start_php() {
-    run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name jiabin_php --link jiabin_mysql:mysql --privileged=true php:7.1.8-fpm-alpine"
+    #run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name jiabin_php --link jiabin_mysql:mysql --privileged=true php:7.1.8-fpm-alpine"
+    run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name jiabin_php --link jiabin_mysql:mysql --privileged=true php:7.1.8-fpm"
 }
 
 function start_nginx(){
-    run_cmd "docker run -d --link jiabin_php:php-fpm -p 80:80  --volumes-from jiabin_php --name jiabin_nginx  nginx:1.13.3"
+    run_cmd "docker run -d --link jiabin_php:php-fpm -p 80:80  --volumes-from jiabin_php --name jiabin_nginx  nginx:1.13.3-alpine"
 }
 
 function build_images() {
@@ -41,13 +42,14 @@ function build_nginx() {
 }
 
 function build_php() {
-    run_cmd "docker build -t php:7.1.8-fpm-alpine $prj_path/docker-library/php/7.1/fpm/alpine"
+    #run_cmd "docker build -t php:7.1.8-fpm-alpine $prj_path/docker-library/php/7.1/fpm/alpine"
+    run_cmd "docker build -t php:7.1.8-fpm $prj_path/docker-library/php/7.1/fpm"
 }
 
 function clean_images() {
     if [ $2 == 'php56' ] ; then
         #docker rmi mysql:5.6
-        docker rmi php:7.1.8-fpm-alpine
+        docker rmi php:7.1.8-fpm
         docker rmi nginx:1.13.3-alpine 
     fi
 }
