@@ -262,7 +262,7 @@ Mac              |  支持
 ├── start.sh
 └── tools
     └── base.sh
-    ```
+```
 
 # 流程分析
 * config.sh配置相应的信息：比如nginx监听端口、php-fpm监听端口等
