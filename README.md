@@ -265,10 +265,11 @@ Mac              |  支持
 ```
 
 # 流程分析
-* config.sh配置相应的信息：比如nginx监听端口、php-fpm监听端口等
-* 安装的程序会读取相应的配置，每个shell脚本(nginx.sh、php.sh、和ext目录下的shell)都可以单独安装，也可以通过init.sh串联起来整套安装。
-* 安装成功会将对应的nginx-config和php-config拷贝到对应的目录，也会根据你在config.sh配置的端口进行更新。
-* 所以你先看下config.sh配置对应的安装目录和开发的端口即可。
+* manager.sh配置镜像的名字的信息
+* 通过manager.sh来完成全部操作
+* docker-config是全部的docker配置信息，包括nginx、mysql、php
+* 在构建基础镜像采用官方提供的Dockerfile，其中构建php修改加入了socket支持。
+* 根目录的Dockerfile是为了深度定制，比如安装redis、mongodb、yaf、swoole扩展，我依旧采用了上一个开源项目来实现的[CompilePHPEnvironment](https://github.com/caojiabin2012/CompilePHPEnvironment)，在Dockerfile里加入调用shell的语法即可
 
 # 简单使用方法
 * git clone https://github.com/caojiabin2012/DockerPHPEnvironment.git
