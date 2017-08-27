@@ -2,7 +2,7 @@
 # 能做什么
 * Docker轻松搭建PHP运行环境。
 
-* 可扩展行很强，根据CompilePHPEnvironment深度定制。
+* 可扩展行很强，根据[CompilePHPEnvironment](https://github.com/caojiabin2012/CompilePHPEnvironment)深度定制。
 
 # 支持环境
 CentOS           |  支持
@@ -269,7 +269,7 @@ Mac              |  支持
 * 通过manager.sh来完成全部操作
 * docker-config是全部的docker配置信息，包括nginx、mysql、php
 * 在构建基础镜像采用官方提供的Dockerfile，其中构建php修改加入了socket支持。
-* 根目录的Dockerfile是为了深度定制，比如安装redis、mongodb、yaf、swoole扩展，我依旧采用了上一个开源项目来实现的[CompilePHPEnvironment](https://github.com/caojiabin2012/CompilePHPEnvironment)，在Dockerfile里加入调用shell的语法即可
+* 根目录的Dockerfile是为了深度定制，比如安装redis、mongodb、yaf、swoole扩展，我依旧采用了上一个开源项目来实现的[CompilePHPEnvironment](https://github.com/caojiabin2012/CompilePHPEnvironment)，在Dockerfile里调用相应的扩展shell即可
 
 # 简单使用方法
 * git clone https://github.com/caojiabin2012/DockerPHPEnvironment.git
