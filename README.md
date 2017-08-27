@@ -9,11 +9,12 @@ CentOS           |  支持
 -----------------| --------------
 Ubuntu           |  支持
 Mac              |  支持
+
+# 目录结构
 ```
 .
-├── Dockerfile
-├── docker-library
-│   ├── mysql
+├── docker-library      docker配置文件 
+│   ├── mysql           mysql配置文件
 │   │   ├── 5.5
 │   │   │   ├── docker-entrypoint.sh
 │   │   │   └── Dockerfile
@@ -34,11 +35,11 @@ Mac              |  支持
 │   │   ├── LICENSE
 │   │   ├── README.md
 │   │   └── update.sh
-│   ├── nginx
+│   ├── nginx           nginx配置文件
 │   │   ├── Dockerfile
 │   │   ├── nginx.conf
 │   │   └── nginx.vh.default.conf
-│   └── php
+│   └── php             php对应版本的配置文件
 │       ├── 5.6
 │       │   ├── alpine
 │       │   │   ├── Dockerfile
@@ -256,11 +257,10 @@ Mac              |  支持
 │       ├── update.sh
 │       ├── zts-Dockerfile-block-1
 │       └── zts-Dockerfile-block-2
-├── docker-php-entrypoint
-├── manager.sh
+├── manager.sh              核心入口
+├── Dockerfile              深度定制php环境
 ├── README.md
-├── start.sh
-└── tools
+└── tools                   工具类
     └── base.sh
 ```
 
@@ -292,7 +292,7 @@ Mac              |  支持
 * 将自己经常重复的工作，写成一个项目开源出来，帮助自己还能帮助他人，何乐不为。
 
 # 项目名称由来XxOoEnvironment
-[CompilePHPEnvironment](https://github.com/caojiabin2012/CompilePHPEnvironment)     | 编译php版本
+[CompilePHPEnvironment](https://github.com/caojiabin2012/CompilePHPEnvironment)     | 编译php版本(已实现)
 ------------------------------------------------------------------------------------| --------------
 [DockerPHPEnvironment](https://github.com/caojiabin2012/DockerPHPEnvironment)       | Docker PHP版本(已实现)
 CompilePythonEnvironment                                                            | 编译python版本
