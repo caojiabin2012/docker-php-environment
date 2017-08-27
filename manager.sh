@@ -6,6 +6,10 @@ source $prj_path/tools/base.sh
 nginx_image=nginx:1.11-alpine
 
 app=jiabin
+mysql_path=/Applications/XAMPP/xamppfiles/htdocs/www/test/mysql
+mysql_password=123.com
+nginx_path=/Applications/XAMPP/xamppfiles/htdocs/www/test/nginx
+php_path=/Applications/XAMPP/xamppfiles/htdocs/www/test/php
 nginx_config="$prj_path/nginx-config"
 
 function run_all() {
@@ -15,14 +19,9 @@ function run_all() {
         start_nginx
     fi
 }
-function start_mysql(){
-    run_cmd "docker run -d -p 3306:3306 --name ${app}_mysql -v /Applications/XAMPP/xamppfiles/htdocs/www/test/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123.com jiabin/mysql:5.6"
-}
 
 function start_php() {
-    #run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name jiabin_php --link jiabin_mysql:mysql --privileged=true php:7.1.8-fpm-alpine"
-    run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name ${app}_php --link ${app}_mysql:mysql --privileged=true jiabin/php:7.1.8-fpm-ext"
-    #run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name ${app}_php --link ${app}_mysql:mysql --privileged=true php:test123"
+    run_cmd "docker run -d -p 9000:9000 -v ${php_path}:/var/www/html --name ${app}_php --link ${app}_mysql:mysql --privileged=true jiabin/php:7.1.8-fpm-ext"
 }
 
 function start_nginx(){
@@ -38,13 +37,16 @@ function build_images() {
     fi
 }
 
+function start_mysql(){
+    run_cmd "docker run -d -p 3306:3306 --name ${app}_mysql -v ${mysql_path}:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${mysql_password} jiabin/mysql:5.6"
+}
+
 function build_nginx() {
     run_cmd "docker build -t nginx:1.13.3-alpine $prj_path/docker-library/nginx"
 }
 
 function build_php() {
-    #run_cmd "docker build -t php:7.1.8-fpm-alpine $prj_path/docker-library/php/7.1/fpm/alpine"
-    run_cmd "docker build -t jia/php:7.1.8-fpm $prj_path/docker-library/php/7.1/fpm"
+    run_cmd "docker build -t php:7.1.8-fpm $prj_path/docker-library/php/7.1/fpm"
 }
 
 function clean_images() {
