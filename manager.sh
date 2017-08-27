@@ -5,33 +5,34 @@ source $prj_path/tools/base.sh
 
 nginx_image=nginx:1.11-alpine
 
-app=jiabin-webserver
+app=jiabin
 nginx_config="$prj_path/nginx-config"
 
 function run_all() {
-    if [ $2 == 'php56' ] ; then
+    if [ $2 == 'php71' ] ; then
         start_mysql
         start_php
         start_nginx
     fi
 }
 function start_mysql(){
-    run_cmd "docker run -d -p 3306:3306 --name jiabin_mysql -v /Applications/XAMPP/xamppfiles/htdocs/www/test/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123.com mysql:5.6"
+    run_cmd "docker run -d -p 3306:3306 --name ${app}_mysql -v /Applications/XAMPP/xamppfiles/htdocs/www/test/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123.com jiabin/mysql:5.6"
 }
 
 function start_php() {
     #run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name jiabin_php --link jiabin_mysql:mysql --privileged=true php:7.1.8-fpm-alpine"
-    run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name jiabin_php --link jiabin_mysql:mysql --privileged=true php:7.1.8-fpm"
+    run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name ${app}_php --link ${app}_mysql:mysql --privileged=true jiabin/php:7.1.8-fpm-ext"
+    #run_cmd "docker run -d -p 9000:9000 -v /Applications/XAMPP/xamppfiles/htdocs/www/test/php:/var/www/html --name ${app}_php --link ${app}_mysql:mysql --privileged=true php:test123"
 }
 
 function start_nginx(){
-    run_cmd "docker run -d --link jiabin_php:php-fpm -p 80:80  --volumes-from jiabin_php --name jiabin_nginx  nginx:1.13.3-alpine"
+    run_cmd "docker run -d --link jiabin_php:php-fpm -p 80:80  --volumes-from jiabin_php --name ${app}_nginx  jiabin/nginx:1.13.3"
 }
 
 function build_images() {
-    if [ $2 == 'php56' ] ; then
+    if [ $2 == 'php71' ] ; then
         echo jinlaile
-        #build_mysql
+        build_mysql
         build_nginx
         build_php
     fi
@@ -43,25 +44,33 @@ function build_nginx() {
 
 function build_php() {
     #run_cmd "docker build -t php:7.1.8-fpm-alpine $prj_path/docker-library/php/7.1/fpm/alpine"
-    run_cmd "docker build -t php:7.1.8-fpm $prj_path/docker-library/php/7.1/fpm"
+    run_cmd "docker build -t jia/php:7.1.8-fpm $prj_path/docker-library/php/7.1/fpm"
 }
 
 function clean_images() {
-    if [ $2 == 'php56' ] ; then
-        #docker rmi mysql:5.6
+    if [ $2 == 'php71' ] ; then
+        docker rmi mysql:5.6
         docker rmi php:7.1.8-fpm
         docker rmi nginx:1.13.3-alpine 
+        echo ok
     fi
 }
 
 function clean_containers() {
-    if [ $2 == 'php56' ] ; then
+    if [ $2 == 'php71' ] ; then
         docker rm -f jiabin_mysql 
-        docker rm -f jiabin_php 
+        docker rm -f jiabin_php
         docker rm -f jiabin_nginx 
     fi
 }
 
+function clean_stop_containers() {
+    run_cmd "docker rm $(docker ps -a -q)"
+}
+
+function clean_none_images() {
+    docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
+}
 function help() {
     cat <<-EOF
 
@@ -80,6 +89,6 @@ EOF
 }
 
 action=${1:-help}
-ALL_COMMANDS="build_images run_all clean_images clean_containers"
+ALL_COMMANDS="build_images run_all clean_images clean_containers clean_stop_containers clean_none_images"
 list_contains ALL_COMMANDS "$action" || action=help
 $action "$@"
